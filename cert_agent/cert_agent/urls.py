@@ -15,7 +15,9 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+from .views import domain_activate
 
 urlpatterns = [
+    url(r'^domain_activate/', domain_activate, name="domain_activate"),
     url(r'^admin/', admin.site.urls),
 ]
