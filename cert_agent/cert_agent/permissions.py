@@ -7,4 +7,4 @@ class APIKeyPermission(permissions.BasePermission):
 
     def has_permission(self, request, view):
         api_key = request.META.get('HTTP_API_KEY', '')
-        return api_key == settings.APPSEMBLER_SECRET_KEY
+        return api_key == settings.API_SECRET_KEY

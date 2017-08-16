@@ -22,15 +22,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '%&jw#+cb$dy(1yn(5q_-wz((8-2jj11se-&rdxl1*afgkm^is!'
+SECRET_KEY = env.get_value('SECRET_KEY', default='CHANGEME')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool("DJANGO_DEBUG", False)
 
-ALLOWED_HOSTS = [
-    'amc.dev',
-]
-
+ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['tahoe.appsembler.com'])
 
 # Application definition
 
@@ -123,4 +120,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-APPSEMBLER_SECRET_KEY = env('APPSEMBLER_SECRET_KEY', default="secret_key")
+API_SECRET_KEY = env('API_SECRET_KEY', default="secret_key")
