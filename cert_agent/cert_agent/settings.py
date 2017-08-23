@@ -27,7 +27,7 @@ SECRET_KEY = env.get_value('DJANGO_SECRET_KEY', default='CHANGEME')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DJANGO_DEBUG", False)
 
-ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['tahoe.appsembler.com'])
+ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['*'])
 
 # Application definition
 
