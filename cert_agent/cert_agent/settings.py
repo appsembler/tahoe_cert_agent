@@ -121,3 +121,5 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 API_SECRET_KEY = env('API_SECRET_KEY', default="secret_key")
+ANSIBLE_CMD = env('ANSIBLE_CMD', default="echo 'running ansible command'")
+
