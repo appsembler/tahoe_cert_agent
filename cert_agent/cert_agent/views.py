@@ -17,7 +17,7 @@ class DomainActivateView(APIView):
 
     def post(self, request, format=None):
         domain = request.data.get('domain')
-        if not domain or validators.domain(domain):
+        if not domain or not validators.domain(domain):
             return Response("Please enter a valid domain", status=status.HTTP_400_BAD_REQUEST)
 
         log.debug("Calling ansible script for domain {}".format(domain))
