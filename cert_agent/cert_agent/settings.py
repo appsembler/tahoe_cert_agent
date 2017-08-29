@@ -114,6 +114,26 @@ USE_L10N = True
 
 USE_TZ = True
 
+# logging
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'cert_agent': {
+            'handlers': ['console'],
+            'level': env.get_value('DJANGO_LOG_LEVEL', default='WARNING')
+        },
+    },
+}
+
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
@@ -122,4 +142,3 @@ STATIC_URL = '/static/'
 
 API_SECRET_KEY = env('API_SECRET_KEY', default="secret_key")
 ANSIBLE_CMD = env('ANSIBLE_CMD', default="echo 'running ansible command'")
-
