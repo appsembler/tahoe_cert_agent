@@ -1,4 +1,4 @@
-from subprocess import check_output, STDOUT
+from subprocess import CalledProcessError, STDOUT, Popen, PIPE
 import logging
 
 from rest_framework import status
@@ -23,9 +23,10 @@ class DomainActivateView(APIView):
         log.debug("Calling ansible script for domain {}".format(domain))
 
         try:
-            output = check_output(settings.ANSIBLE_CMD, shell=True, stderr=STDOUT)
-            log.debug("The output was: ".format(output))
-        except Exception as e:
+            process = Popen(settings.ANSIBLE_CMD, stdout=PIPE, stderr=STDOUT, shell=True)
+            for line in iter(process.stdout.readline, ''):
+                log.debug(line)
+        except CalledProcessError as e:
             log.error(str(e))
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
