@@ -26,6 +26,10 @@ class DomainActivateView(APIView):
             process = Popen(settings.ANSIBLE_CMD, stdout=PIPE, stderr=STDOUT, shell=True)
             for line in iter(process.stdout.readline, ''):
                 log.debug(line)
+            process.wait()
+            if process.returncode != 0:
+                log.debug("Ansible exited with non zero return code!")
+                return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except CalledProcessError as e:
             log.error(str(e))
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
