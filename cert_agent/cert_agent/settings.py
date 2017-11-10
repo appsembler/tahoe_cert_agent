@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 import environ
 import os
+import raven
 
 env = environ.Env()
 
@@ -38,6 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'raven.contrib.django.raven_compat',
+
 ]
 
 MIDDLEWARE = [
@@ -124,13 +128,24 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
         },
+        'sentry': {
+            'level': 'ERROR', # To capture more than ERROR, change to WARNING, INFO, etc.
+            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
+        },
     },
     'loggers': {
         'cert_agent': {
-            'handlers': ['console'],
+            'handlers': ['console', 'sentry'],
             'level': env.get_value('DJANGO_LOG_LEVEL', default='WARNING')
         },
     },
+}
+
+RAVEN_CONFIG = {
+    'dsn': env('SENTRY_DSN', default=''),
+    # If you are using git, you can also automatically configure the
+    # release based on the git info.
+    'release': raven.fetch_git_sha(os.path.abspath(os.pardir)),
 }
 
 
