@@ -1,3 +1,5 @@
 [run]
 
-include=cert_agent/cert_agent
+omit =
+    manage.py
+    wsgi.py
