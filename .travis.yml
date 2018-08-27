@@ -4,6 +4,10 @@ python:
   - "2.7"
 install:
   - pip install -r test_requirements.txt
+  - pip install python-coveralls
 
 script:
-  - cd cert_agent && python manage.py test
+  - cd cert_agent && coverage run --source=../cert_agent manage.py test
+
+after_success:
+  - coveralls --base_dir=/home/travis/build/appsembler/tahoe_cert_agent/
