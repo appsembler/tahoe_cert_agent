@@ -23,9 +23,9 @@ class DomainActivateView(APIView):
         log.debug("Calling ansible script for domain {}".format(domain))
 
         try:
-            process = Popen(settings.ANSIBLE_CMD, stdout=PIPE, stderr=STDOUT, shell=True)
-            for line in iter(process.stdout.readline, ''):
-                log.debug(line)
+            ansible_cmd = settings.ANSIBLE_CMD + " --extra-vars 'letsencrypt_single_cert=%s'" % domain
+            process = Popen(ansible_cmd, stdout=PIPE, stderr=STDOUT, shell=True)
+
             process.wait()
             if process.returncode != 0:
                 log.error("Ansible exited with non zero return code!")
