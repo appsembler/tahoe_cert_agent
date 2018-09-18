@@ -1,5 +1,7 @@
+from datetime import datetime
 from subprocess import CalledProcessError, STDOUT, Popen, PIPE
 import logging
+import os
 import re
 
 from rest_framework import status
@@ -12,6 +14,16 @@ from django.conf import settings
 
 log = logging.getLogger(__name__)
 whitelist_pattern = re.compile("[^\.-_a-zA-Z0-9]")
+
+
+def log_filename(domain, now=None):
+    """ ansible log file name. timestamp and domain to make it easy to find
+
+    expects `domain` to already be sanitized.
+    """
+    if not now:
+        now = datetime.utcnow()
+    return "{}-{}.log".format(now.strftime("%Y-%m-%dT%X"), domain)
 
 
 class DomainActivateView(APIView):
@@ -28,8 +40,10 @@ class DomainActivateView(APIView):
             # remove any potentially unsafe chars from `domain` before passing it to the shell
             domain = whitelist_pattern.sub("", domain)
             ansible_cmd = settings.ANSIBLE_CMD + " --extra-vars 'letsencrypt_single_cert=%s'" % domain
-            process = Popen(ansible_cmd, stdout=PIPE, stderr=STDOUT, shell=True)
-
+            my_env = os.environ.copy()
+            my_env['ANSIBLE_LOG_PATH'] = os.path.join(settings.ANSIBLE_LOG_DIR, log_filename(domain))
+            process = Popen(ansible_cmd, stdout=PIPE, stderr=STDOUT, shell=True,
+                            env=my_env)
             process.wait()
             if process.returncode != 0:
                 log.error("Ansible exited with non zero return code!")

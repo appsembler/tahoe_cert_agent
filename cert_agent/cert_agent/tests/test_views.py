@@ -1,5 +1,6 @@
+from datetime import datetime
 from django.test import RequestFactory, TestCase
-from ..views import DomainActivateView
+from ..views import DomainActivateView, log_filename
 
 from mock import patch
 
@@ -51,3 +52,11 @@ class DomainActivateViewTests(TestCase):
             response = DomainActivateView.as_view()(request)
             self.assertEqual(response.status_code, 500)
             mock_logger.error.assert_called_with("Ansible exited with non zero return code!")
+
+
+class TestHelpers(TestCase):
+    def test_log_filename(self):
+        d = datetime(year=2018, month=1, day=1, hour=12, minute=0, second=0)
+        domain = "foo.example.com"
+        r = log_filename(domain, now=d)
+        self.assertEqual(r, "2018-01-01T12:00:00-foo.example.com.log")
