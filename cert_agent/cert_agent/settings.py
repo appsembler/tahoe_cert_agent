@@ -129,7 +129,7 @@ LOGGING = {
             'class': 'logging.StreamHandler',
         },
         'sentry': {
-            'level': 'ERROR', # To capture more than ERROR, change to WARNING, INFO, etc.
+            'level': 'ERROR',  # To capture more than ERROR, change to WARNING, INFO, etc.
             'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
         },
     },
@@ -147,8 +147,6 @@ RAVEN_CONFIG = {
     # release based on the git info.
     'release': raven.fetch_git_sha(os.path.abspath(os.pardir)),
 }
-
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
