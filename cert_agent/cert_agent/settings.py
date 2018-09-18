@@ -148,6 +148,21 @@ RAVEN_CONFIG = {
     'release': raven.fetch_git_sha(os.path.abspath(os.pardir)),
 }
 
+# statsd metrics
+if not DEBUG:
+    INSTALLED_APPS += ['django_statsd', ]
+
+    # these need to be at the beginning of the MIDDLEWARE
+    MIDDLEWARE = [
+        'django_statsd.middleware.GraphiteRequestTimingMiddleware',
+        'django_statsd.middleware.GraphiteMiddleware',
+    ] + MIDDLEWARE
+
+    STATSD_HOST = env('STATSD_HOST', default='stage-prometheus.infra.appsembler.com')
+    STATSD_PORT = env('STATSD_PORT', default=9125)
+    STATSD_CLIENT = 'statsd.client'
+    STATSD_PREFIX = env('STATSD_PREFIX', default='tahoe_cert_agent')
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 

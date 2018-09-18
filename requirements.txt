@@ -1,10 +1,12 @@
 decorator==4.1.2
 Django==1.11.4
 django-environ==0.4.3
+django-statsd-mozilla==0.4.0
 djangorestframework==3.6.3
 pytz==2017.2
 raven==6.3.0
 six==1.10.0
+statsd==3.2.2
 validators==0.12.0
 gunicorn==19.7.1
 
