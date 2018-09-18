@@ -41,7 +41,7 @@ class DomainActivateViewTests(TestCase):
             response = DomainActivateView.as_view()(request)
             self.assertEqual(response.status_code, 202)
             # mock logger only remembers the last one it was called with
-            mock_logger.debug.assert_called_with('three\n')
+            mock_logger.debug.assert_called_with('Calling ansible script for domain www.example.com')
 
     @patch('cert_agent.views.log')
     def test_failed_command(self, mock_logger):
