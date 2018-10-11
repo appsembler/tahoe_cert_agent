@@ -1,4 +1,4 @@
-from django.test import RequestFactory, TestCase
+from django.test import Client, RequestFactory, TestCase
 from ..views import DomainActivateView
 
 from mock import patch
@@ -41,7 +41,7 @@ class DomainActivateViewTests(TestCase):
             response = DomainActivateView.as_view()(request)
             self.assertEqual(response.status_code, 202)
             # mock logger only remembers the last one it was called with
-            mock_logger.debug.assert_called_with('three\n')
+            mock_logger.debug.assert_called_with('Calling ansible script for domain www.example.com')
 
     @patch('cert_agent.views.log')
     def test_failed_command(self, mock_logger):
@@ -51,3 +51,17 @@ class DomainActivateViewTests(TestCase):
             response = DomainActivateView.as_view()(request)
             self.assertEqual(response.status_code, 500)
             mock_logger.error.assert_called_with("Ansible exited with non zero return code!")
+
+
+class SmokeTestViews(TestCase):
+    def test_smoketest(self):
+        c = Client()
+        # fail by default
+        response = c.get('/smoketest/')
+        self.assertFalse('PASS' in str(response.content))
+        self.assertEqual(response.status_code, 500)
+        # set the API_SECRET_KEY to make it pass
+        with self.settings(API_SECRET_KEY='not the default'):
+            response = c.get('/smoketest/')
+            self.assertTrue('PASS' in str(response.content))
+            self.assertEqual(response.status_code, 200)

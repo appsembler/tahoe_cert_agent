@@ -1,5 +1,6 @@
 from subprocess import CalledProcessError, STDOUT, Popen, PIPE
 import logging
+import re
 
 from rest_framework import status
 from rest_framework.response import Response
@@ -10,6 +11,7 @@ from django.conf import settings
 
 
 log = logging.getLogger(__name__)
+whitelist_pattern = re.compile("[^\.-_a-zA-Z0-9]")
 
 
 class DomainActivateView(APIView):
@@ -23,9 +25,11 @@ class DomainActivateView(APIView):
         log.debug("Calling ansible script for domain {}".format(domain))
 
         try:
-            process = Popen(settings.ANSIBLE_CMD, stdout=PIPE, stderr=STDOUT, shell=True)
-            for line in iter(process.stdout.readline, ''):
-                log.debug(line)
+            # remove any potentially unsafe chars from `domain` before passing it to the shell
+            domain = whitelist_pattern.sub("", domain)
+            ansible_cmd = settings.ANSIBLE_CMD + " --extra-vars 'letsencrypt_single_cert=%s'" % domain
+            process = Popen(ansible_cmd, stdout=PIPE, stderr=STDOUT, shell=True)
+
             process.wait()
             if process.returncode != 0:
                 log.error("Ansible exited with non zero return code!")
