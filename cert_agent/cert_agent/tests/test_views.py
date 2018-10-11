@@ -1,5 +1,6 @@
+
 from datetime import datetime
-from django.test import RequestFactory, TestCase
+from django.test import Client, RequestFactory, TestCase
 from ..views import DomainActivateView, log_filename
 
 from mock import patch
@@ -60,3 +61,17 @@ class TestHelpers(TestCase):
         domain = "foo.example.com"
         r = log_filename(domain, now=d)
         self.assertEqual(r, "2018-01-01T12:00:00-foo.example.com.log")
+
+
+class SmokeTestViews(TestCase):
+    def test_smoketest(self):
+        c = Client()
+        # fail by default
+        response = c.get('/smoketest/')
+        self.assertFalse('PASS' in str(response.content))
+        self.assertEqual(response.status_code, 500)
+        # set the API_SECRET_KEY to make it pass
+        with self.settings(API_SECRET_KEY='not the default'):
+            response = c.get('/smoketest/')
+            self.assertTrue('PASS' in str(response.content))
+            self.assertEqual(response.status_code, 200)
