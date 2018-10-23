@@ -171,3 +171,4 @@ STATIC_URL = '/static/'
 
 API_SECRET_KEY = env('API_SECRET_KEY', default="secret_key")
 ANSIBLE_CMD = env('ANSIBLE_CMD', default="echo 'running ansible command'")
+ANSIBLE_LOG_DIR = env('ANSIBLE_LOG_DIR', default="/var/log/tahoe_cert_agent/")
