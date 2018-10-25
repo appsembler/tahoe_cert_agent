@@ -13,7 +13,7 @@ from django.conf import settings
 
 
 log = logging.getLogger(__name__)
-whitelist_pattern = re.compile("[^\.-_a-zA-Z0-9]")
+whitelist_pattern = re.compile("[^\.\-_a-zA-Z0-9]")
 
 
 def log_filename(domain, now=None):
