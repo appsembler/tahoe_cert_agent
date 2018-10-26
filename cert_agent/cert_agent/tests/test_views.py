@@ -1,7 +1,7 @@
 
 from datetime import datetime
 from django.test import Client, RequestFactory, TestCase
-from ..views import DomainActivateView, log_filename
+from ..views import DomainActivateView, log_filename, sanitize_domain
 
 from mock import patch
 
@@ -61,6 +61,27 @@ class TestHelpers(TestCase):
         domain = "foo.example.com"
         r = log_filename(domain, now=d)
         self.assertEqual(r, "2018-01-01T12:00:00-foo.example.com.log")
+
+    def test_sanitize_domain(self):
+        table = [
+            # (test value, expected output)
+
+            # valid, should not be changed
+            ('foo', 'foo'),
+            ('foo-bar', 'foo-bar'),
+            ('www.example.com', 'www.example.com'),
+
+            # make sure bad things are stripped
+            ('  www.example.com  ', 'www.example.com'),
+            ('\n www.example.com', 'www.example.com'),
+            (';www.example.com', 'www.example.com'),
+            ('?www.example.com', 'www.example.com'),
+            ('"www.example.com', 'www.example.com'),
+            ('\\www.example.com', 'www.example.com'),
+            ('\'www.example.com', 'www.example.com'),
+        ]
+        for value, expected in table:
+            self.assertEqual(sanitize_domain(value), expected)
 
 
 class SmokeTestViews(TestCase):
