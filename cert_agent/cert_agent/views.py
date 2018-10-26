@@ -44,6 +44,14 @@ class DomainActivateView(APIView):
             my_env['ANSIBLE_LOG_PATH'] = os.path.join(settings.ANSIBLE_LOG_DIR, log_filename(domain))
             process = Popen(ansible_cmd, stdout=PIPE, stderr=STDOUT, shell=True,
                             env=my_env)
+            with process.stdout:
+                for _line in iter(process.stdout.readline, b''):
+                    # if we don't read from STDOUT, the pipe will
+                    # fill up and it will hang.
+                    # currently we don't need to do anything with the
+                    # output, but if we decide we want to, this is
+                    # a handy spot to do that
+                    pass
             process.wait()
             if process.returncode != 0:
                 log.error("Ansible exited with non zero return code!")
