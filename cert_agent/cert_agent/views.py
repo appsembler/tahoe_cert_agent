@@ -13,7 +13,6 @@ from django.conf import settings
 
 
 log = logging.getLogger(__name__)
-whitelist_pattern = re.compile("[^\.\-_a-zA-Z0-9]")
 
 
 def log_filename(domain, now=None):
@@ -24,6 +23,12 @@ def log_filename(domain, now=None):
     if not now:
         now = datetime.utcnow()
     return "{}-{}.log".format(now.strftime("%Y-%m-%dT%X"), domain)
+
+
+def sanitize_domain(domain):
+    """ remove any potentially unsafe chars from `domain` before passing it to the shell """
+    whitelist_pattern = re.compile("[^\.\-_a-zA-Z0-9]")
+    return whitelist_pattern.sub("", domain)
 
 
 class DomainActivateView(APIView):
@@ -37,8 +42,7 @@ class DomainActivateView(APIView):
         log.debug("Calling ansible script for domain {}".format(domain))
 
         try:
-            # remove any potentially unsafe chars from `domain` before passing it to the shell
-            domain = whitelist_pattern.sub("", domain)
+            domain = sanitize_domain(domain)
             ansible_cmd = settings.ANSIBLE_CMD + " --extra-vars 'letsencrypt_single_cert=%s'" % domain
             my_env = os.environ.copy()
             my_env['ANSIBLE_LOG_PATH'] = os.path.join(settings.ANSIBLE_LOG_DIR, log_filename(domain))
