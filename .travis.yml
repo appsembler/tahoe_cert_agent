@@ -3,10 +3,7 @@ python:
   - "2.7"
   - "3.6"
 install:
-  - pip install tox-travis coveralls
-
+  - pip install tox-travis
+  
 script:
-  - tox
-
-after_success:
-  - coveralls --base_dir=/home/travis/build/appsembler/tahoe_cert_agent/
+  - POST_COMMAND=coveralls tox
