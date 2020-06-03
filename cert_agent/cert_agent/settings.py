@@ -53,6 +53,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'beeline.middleware.django.HoneyMiddleware',
 ]
 
 ROOT_URLCONF = 'cert_agent.urls'
@@ -172,3 +173,7 @@ STATIC_URL = '/static/'
 API_SECRET_KEY = env('API_SECRET_KEY', default="secret_key")
 ANSIBLE_CMD = env('ANSIBLE_CMD', default="echo 'running ansible command'")
 ANSIBLE_LOG_DIR = env('ANSIBLE_LOG_DIR', default="/var/log/tahoe_cert_agent/")
+
+# Honeycomb
+HONEYCOMB_WRITEKEY = env.get_value('HONEYCOMB_WRITEKEY', default=None)
+HONEYCOMB_DATASET = env.get_value('HONEYCOMB_DATASET', default=None)
