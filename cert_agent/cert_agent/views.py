@@ -27,7 +27,7 @@ def log_filename(domain, now=None):
 
 def sanitize_domain(domain):
     """ remove any potentially unsafe chars from `domain` before passing it to the shell """
-    whitelist_pattern = re.compile("[^\.\-_a-zA-Z0-9]")
+    whitelist_pattern = re.compile(r"[^\.\-_a-zA-Z0-9]")
     return whitelist_pattern.sub("", domain)
 
 
