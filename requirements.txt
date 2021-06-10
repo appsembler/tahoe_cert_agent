@@ -1,5 +1,5 @@
 decorator==5.0.7
-Django==2.2.21
+Django==2.2.22
 django-environ==0.4.5
 django-statsd-mozilla==0.4.0
 django-smoketest==1.1.2
