@@ -10,4 +10,4 @@ six==1.15.0
 statsd==3.3.0
 validators==0.18.2
 gunicorn==20.1.0
-honeycomb-beeline==2.16.2
+honeycomb-beeline==2.17.1
