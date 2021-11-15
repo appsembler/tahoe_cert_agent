@@ -1,5 +1,5 @@
 from datetime import datetime
-from subprocess import CalledProcessError, STDOUT, Popen, PIPE
+from subprocess import CalledProcessError, STDOUT, Popen, PIPE  # nosec
 import logging
 import os
 import re
@@ -46,7 +46,7 @@ class DomainActivateView(APIView):
             ansible_cmd = settings.ANSIBLE_CMD + " --extra-vars 'letsencrypt_single_cert=%s'" % domain
             my_env = os.environ.copy()
             my_env['ANSIBLE_LOG_PATH'] = os.path.join(settings.ANSIBLE_LOG_DIR, log_filename(domain))
-            process = Popen(ansible_cmd, stdout=PIPE, stderr=STDOUT, shell=True,
+            process = Popen(ansible_cmd, stdout=PIPE, stderr=STDOUT, shell=True,  # nosec
                             env=my_env)
             with process.stdout:
                 for _line in iter(process.stdout.readline, b''):
